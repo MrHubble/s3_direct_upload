@@ -1,4 +1,4 @@
-#= require jquery-fileupload/vendor/tmpl
+#= require jquery-fileupload/tmpl.min
 #= require jquery-fileupload/jquery.ui.widget
 #= require jquery-fileupload/load-image.min
 #= require jquery-fileupload/canvas-to-blob.min
