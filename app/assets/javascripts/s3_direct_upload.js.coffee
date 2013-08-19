@@ -24,11 +24,12 @@ $.fn.S3Uploader = (options) ->
     path: ''
     additional_data: null
     before_add: null
+    before_send: null    
     remove_completed_progress_bar: true
     remove_failed_progress_bar: false
     progress_bar_target: null
     click_submit_target: null
-    allow_multiple_files: true
+    allow_multiple_files: false
     image_max_width: 600
     image_max_height: 600    
 
@@ -48,11 +49,16 @@ $.fn.S3Uploader = (options) ->
       imageMaxHeight: settings.image_max_height
       disableImagePreview: true
 
-      add: (e, data) ->
-        file = data.files[0]
-        file.unique_id = Math.random().toString(36).substr(2,16)
+      # add: (e, data) ->
+      #   file = data.files[0]
+      #   file.unique_id = Math.random().toString(36).substr(2,16)
 
-        unless settings.before_add and not settings.before_add(file)
+      send: (e, data) ->
+        file = data.files[0]
+        file.unique_id = Math.random().toString(36).substr(2,16)      
+
+#        unless settings.before_add and not settings.before_add(file)
+        if settings.before_send
           current_files.push data
           if $('#template-upload').length > 0
             data.context = $($.trim(tmpl("template-upload", file)))
