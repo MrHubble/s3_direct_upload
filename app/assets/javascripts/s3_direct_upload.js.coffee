@@ -47,18 +47,17 @@ $.fn.S3Uploader = (options) ->
       disableImageResize: /Android(?!.*Chrome)|Opera/.test(window.navigator && navigator.userAgent)
       imageMaxWidth: settings.image_max_width
       imageMaxHeight: settings.image_max_height
-      disableImagePreview: true
 
-      # add: (e, data) ->
-      #   file = data.files[0]
-      #   file.unique_id = Math.random().toString(36).substr(2,16)
-
-      send: (e, data) ->
+      add: (e, data) ->
         file = data.files[0]
-        file.unique_id = Math.random().toString(36).substr(2,16)      
+        file.unique_id = Math.random().toString(36).substr(2,16)
 
-#        unless settings.before_add and not settings.before_add(file)
-        unless settings.before_send
+      # send: (e, data) ->
+      #   file = data.files[0]
+      #   file.unique_id = Math.random().toString(36).substr(2,16)      
+
+        unless settings.before_add and not settings.before_add(file)
+        # unless settings.before_send
           current_files.push data
           if $('#template-upload').length > 0
             data.context = $($.trim(tmpl("template-upload", file)))
