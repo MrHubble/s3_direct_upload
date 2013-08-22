@@ -48,19 +48,17 @@ $.fn.S3Uploader = (options) ->
       imageMaxWidth: settings.image_max_width
       imageMaxHeight: settings.image_max_height
 
+      # The add option is passed a function and this is triggered when a new file is added. Each separate file that is uploaded will trigger this function and it’s passed a data object that we can use to fetch various information such as the file object that we can pass to the template which we reference by the id we gave it.
       add: (e, data) ->
         file = data.files[0]
-        file.unique_id = Math.random().toString(36).substr(2,16)
-
-      # send: (e, data) ->
-      #   file = data.files[0]
-      #   file.unique_id = Math.random().toString(36).substr(2,16)      
+        file.unique_id = Math.random().toString(36).substr(2,16)  
 
         unless settings.before_add and not settings.before_add(file)
-        # unless settings.before_send
           current_files.push data
           if $('#template-upload').length > 0
+            #Calling tmpl will render this template and we pass this to the jQuery function, $.
             data.context = $($.trim(tmpl("template-upload", file)))
+            # We set the data.context to the result of this so that we can reference it later. We then append the template to the form
             $(data.context).appendTo(settings.progress_bar_target || $uploadForm)
           else if !settings.allow_multiple_files
             data.context = settings.progress_bar_target
@@ -70,16 +68,19 @@ $.fn.S3Uploader = (options) ->
             else
               forms_for_submit = [data]
           else
+          #then call data.submit to trigger the uploading of the file.
             data.submit()
 
       start: (e) ->
         $uploadForm.trigger("s3_uploads_start", [e])
 
+      # The progress callback updates a the progress bar. First we check that the data context that we set in add exists; if it does then we find the progress bar and set its width depending on the current progress of the uploaded file.
       progress: (e, data) ->
         if data.context
           progress = parseInt(data.loaded / data.total * 100, 10)
           data.context.find('.bar').css('width', progress + '%')
 
+      #The done callback handles posting the data to the URL that is supplied by the form.
       done: (e, data) ->
         content = build_content_object $uploadForm, data.files[0], data.result
 
